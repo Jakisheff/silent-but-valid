@@ -86,22 +86,63 @@ product form.
 ## What the five share
 
 Each failure produced a validity-shaped signal at the layer where someone
-would look, and each real defect lived one layer below or beside it. The
-common rule that survived our red-team review:
+would look, and each real defect lived one layer below or beside it.
+
+Frequency, with a denominator: five classes surfaced across fourteen cold
+agent runs and one long primary agent session over two days on one
+repository. Direct loss: roughly 3.5 to 4 engineer-hours (a collapsed
+pre-registered series, a two-week-stalled PR, a semantic fix with a
+follow-up PR, four agents each losing minutes to a naive green command).
+
+The detector matrix, gate by gate:
+
+| Case | Unit tests | Mutation gate | CI color | Linters | Human or cold-agent review |
+|---|---|---|---|---|---|
+| 1 quiet default | silent | silent | silent (exit 0) | silent | **caught** (identical medians) |
+| 2 zero CI runs | n/a | n/a | no signal at all | n/a | **caught** (by accident, 2 weeks) |
+| 3 green, wrong semantics | green | silent (41 sites uncovered) | green | silent | **caught** (cold agent, 13 min) |
+| 4 naive green command | partial green | n/a | green | silent | **partially caught** (4 of 9 agents flagged it) |
+| 5 confident UI | green (95 checks) | n/a | green | silent | **caught** (non-author review) |
+
+Zero of five are visible to any automatic gate. Five of five are visible
+to a second, independent reader. That is the finding, and it survived our
+own red-team review as the only rule that carries:
 
 > Nothing is verified until an independent, cold, uninvested reader has
-> re-checked it. Silence, zero, and green are all signals to be
-> interpreted, not evidence of health.
+> re-checked it. Silence, zero, and green are signals to be interpreted,
+> not evidence of health.
 
-## The dataset
+`cases.jsonl` holds all five in machine-readable form (layer, symptom,
+looked_valid, actually, countermeasure, anchor).
 
-`cases.jsonl` holds the five cases with fields: id, layer (cli, ci, tests,
-build, ui), symptom, looked_valid, actually, countermeasure, anchor
-(oracle_problem, grey_failure, both, adjacent). Two cases are code-level
-and in principle detectable by mutation testing; three are infrastructure
-level, where no test suite sees anything at all. That split is the point:
-agent pipelines multiply the infrastructure-level surface where the oracle
-problem wears a green costume.
+## Not only us: external cases of the same shape
+
+- The SpecBench hash-table compiler (arXiv 2605.21384): 97% visible score,
+  0% held-out, an artifact that looked like a working compiler to every
+  visible signal.
+- SWE-Marathon (arXiv 2606.07682): in 13.8% of runs agents attempted to
+  read hidden artifacts or alter test filters; the visible pipeline stayed
+  green while it happened.
+- Validation overfitting from repeated adaptive queries has been measured
+  since Cawley & Talbot (JMLR 2010) and documented at scale during the
+  NAS reproducibility crisis: the quiet-default shape is old; the agent
+  pipeline multiplied where it can occur.
+
+## Where it sits in existing taxonomy
+
+Case 3 is the oracle problem (Barr et al., IEEE TSE 2015) in an agent
+pipeline. Case 2 is a grey failure (Gunawi et al., HotOS 2017) at the CI
+layer. Cases 1, 4, and 5 are adjacent: configuration, build, and
+presentation layers where no oracle is even consulted. The agent-era delta
+is the multiplication of such layers, not a new failure mechanism.
+
+## The detector
+
+`silent_check.py` (advisory, Python, three checks): zero-dispersion across
+a run series, zero check-runs after a push, test files touched by a diff.
+Each check reports the absence of signal, not the presence of a defect.
+Reproductions for the collapsed-series case and the mutation-gate silence
+are in `repro/`, with a loud negative control for contrast.
 
 ## Provenance
 

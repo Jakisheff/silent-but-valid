@@ -135,6 +135,18 @@ looked_valid, actually, countermeasure, anchor).
   affordable-but-not-taken buys in the same game were silent, valid, and
   invisible to every gate (baseline diagnostics, single-winner run).
 
+## One image for the whole class
+
+Every case here is a performance of validity: an empty stage announced as
+a running show (zero CI runs), an actor flawlessly reading the wrong
+script (green tests over wrong semantics), a confident tableau with no
+scene behind it (the UI lie), a monologue by an actor who cannot hear the
+hall (bit-identical answers across information arms). The stage machinery
+looks right, so nobody checks whether the play is happening. This is the
+security-theater shape (Schneier, 2003) moved from safety to correctness:
+measures that perform protection without protecting, signals that perform
+truth without being true.
+
 ## Where it sits in existing taxonomy
 
 Case 3 is the oracle problem (Barr et al., IEEE TSE 2015) in an agent

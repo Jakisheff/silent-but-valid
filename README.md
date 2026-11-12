@@ -127,6 +127,13 @@ looked_valid, actually, countermeasure, anchor).
   since Cawley & Talbot (JMLR 2010) and documented at scale during the
   NAS reproducibility crisis: the quiet-default shape is old; the agent
   pipeline multiplied where it can occur.
+- Our own game world added a sixth case: in a paired experiment where the
+  only difference was extra market context in one arm, every saved request
+  and response came back bit-identical. The run was perfectly valid; the
+  agent was provably blind to the information it was given. One blocked
+  out-of-menu choice in 1,806 decisions was loud and caught; 526
+  affordable-but-not-taken buys in the same game were silent, valid, and
+  invisible to every gate (baseline diagnostics, single-winner run).
 
 ## Where it sits in existing taxonomy
 
